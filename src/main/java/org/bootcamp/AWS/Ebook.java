@@ -44,7 +44,7 @@ public class Ebook {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		/*EventQueue.invokeLater(new Runnable() {
+		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					Ebook window = new Ebook();
@@ -53,7 +53,7 @@ public class Ebook {
 					e.printStackTrace();
 				}
 			}
-		});*/
+		});
 
 		System.out.println("file url location: " + new java.io.File("").getAbsolutePath());
 		System.out.println("file url location: " + new java.io.File("").getPath());
@@ -115,11 +115,11 @@ public class Ebook {
 	 * Create the application.
 	 */
 	public Ebook() {
-		/////initialize();
-		frame2 = new JFrame();
+		initialize();
+		/*frame2 = new JFrame();
 		frame2.setBounds(100, 100, 450, 300);
 		frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame2.setVisible(true);
+		frame2.setVisible(true);*/
 	}
 
 	/**

@@ -62,12 +62,19 @@ public class List {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
+		frame.getContentPane().setLayout(null);
 
 		JToolBar toolBar = new JToolBar();
-		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
+		toolBar.setBounds(0, 0, 448, 19);
+		frame.getContentPane().add(toolBar);
 		
 		JToggleButton tglbtnNewToggleButton = new JToggleButton("New toggle button");
-		frame.getContentPane().add(tglbtnNewToggleButton, BorderLayout.WEST);
+		tglbtnNewToggleButton.setBounds(0, 19, 300, 20);
+		frame.getContentPane().add(tglbtnNewToggleButton);
+		
+		JToggleButton toggleButton = new JToggleButton("New toggle button");
+		toggleButton.setBounds(10, 47, 300, 20);
+		frame.getContentPane().add(toggleButton);
 
 		JButton backButton = new JButton("Book1");
 		backButton.addActionListener(new ActionListener() {
@@ -78,5 +85,4 @@ public class List {
 		});
 		
 	}
-
 }
