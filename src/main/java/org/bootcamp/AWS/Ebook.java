@@ -130,6 +130,7 @@ public class Ebook implements Serializable {
 		System.out.println("Ebook init");
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		toolBar = new JToolBar();
 		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
 		toolBar.setVisible(true);
@@ -208,8 +209,14 @@ public class Ebook implements Serializable {
 		JButton btnAddABook = new JButton("Add a Book");
 		btnAddABook.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
+				JButton	saveButton = new JButton("Save a Book");
 				
+					
+						frame.add(saveButton);
+						toolBar.add(saveButton);
+						
+						
+					
 				
 				
 			}
