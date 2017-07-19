@@ -1,26 +1,41 @@
 package org.bootcamp.AWS;
+/* Copyright © 2015 Oracle and/or its affiliates. All rights reserved. */
 
-import javax.persistence.*;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
+
 
 
 @Entity
-public class Book {
+public class Book implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8583264359815044725L;
+
 	@Id
 	//@OneToOne(mappedBy = "activeBook", fetch = FetchType.LAZY)
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
 	
-
+	@ManyToOne 
+	private User User;
+	private String name;
 	
-	@ManyToOne @JoinColumn
-	private User user;
-	private  String name;
 	public User getUser() {
-		return user;
+		return User;
 	}
-	public void setUser(User user) {
-		this.user = user;
-		user.addBook(this);
+	public void setUser(User User) {
+		this.User = User;
 	}
 	public void setLine(Integer line) {
 		this.line = line;
@@ -60,15 +75,17 @@ public class Book {
 	public void setExist(boolean exist) {
 		this.exist = exist;
 	}
-	public Book() {
-		super();
-	}
+	
 
 	
 	public Book(String name) {
 		super();
 		this.line = 0;
 		this.name = name;
+	}
+	public Book() {
+		super();
+
 	}
 	
 	@Override

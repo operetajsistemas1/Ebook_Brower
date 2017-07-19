@@ -37,7 +37,7 @@ public class AWSManager {
 
 	public Book createUserBook(User user, String name) {
 		Book book = new Book(name);
-		book.setUser(user);
+//		book.setUser(user.getId());
 		persist(book);
 		user.addBook(book);
 		persist(user);		

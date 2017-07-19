@@ -1,7 +1,9 @@
 package org.bootcamp.AWS;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,32 +17,39 @@ import javax.persistence.*;
 
 
 @Entity
-public class User {
+public class User implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4674769194392810510L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
-
-	@OneToMany(mappedBy = "user")
+	
+	@OneToMany(mappedBy = "User")
 	@OrderBy("id ASC")
-	private Set<Book> books;
-
-	@OneToOne(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
-	@JoinColumn(name="book_id")
-	private Book book_id;
-
-	public Book getBookId() {
-		return book_id;
+//	@Transient
+	private Set<Book> items;
+	
+//	@OneToOne(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+//	@JoinColumn(name="book_id")
+//	@Transient
+	private int bookId;
+	
+	public int getBookId() {
+		return bookId;
 	}
 
-	public void setBookId(Book book_id) {
-		this.book_id = book_id;
+	public void setBookId(int book_id) {
+		this.bookId = book_id;
 	}
 
-	private String name;
+	private  String name;
 	private String password;
 
-
+	
 	public int getId() {
 		return id;
 	}
@@ -60,39 +69,38 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	
 
 	public User( String name, String password) {
 		super();
 		this.name = name;
 		this.password = password;
-		books = new HashSet<Book>();	
+		items = new HashSet<Book>();	
 	}
-
-
 	public User() {
 		super();
+		items = new HashSet<Book>();
 	}
 
-	//	public User() {
-	//		super();
-	//		books = new HashSet<Book>();
-	//	}
-
+//	public User() {
+//		super();
+//		books = new HashSet<Book>();
+//	}
+	
 	public void addBook(Book book) {
 		// 
 		System.out.println("Invoice add item2: " + book.toString());
-		books.add(book);
+		items.add(book);
 		System.out.println("Invoice content " + this.toString());		
-
+		
 	}
-	@javax.persistence.OneToMany(mappedBy = "user") 
+//	@javax.persistence.OneToMany(mappedBy = "user") 
 	public Set<Book> getItems() {
-
-		return this.books;
+		
+		return this.items;
 	}
-
-
+	
+	
 
 	@Override
 	public int hashCode() {
@@ -121,12 +129,13 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [name=" + name + "]";
+		return "User [id=" + id + ", items=" + items + ", book_id=" + bookId + ", name=" + name + ", password="
+				+ password + "]";
 	}
-
-
-
-
-
+	
+	
+	
+	
+	
 }
 
