@@ -31,7 +31,7 @@ public class User implements Serializable {
 	@OneToMany(mappedBy = "User")
 	@OrderBy("id ASC")
 //	@Transient
-	private Set<Book> items;
+	private Vector<Book> items;
 	
 //	@OneToOne(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
 //	@JoinColumn(name="book_id")
@@ -75,11 +75,11 @@ public class User implements Serializable {
 		super();
 		this.name = name;
 		this.password = password;
-		items = new HashSet<Book>();	
+		items = new Vector<Book>();	
 	}
 	public User() {
 		super();
-		items = new HashSet<Book>();
+		items = new Vector<Book>();
 	}
 
 //	public User() {
@@ -95,7 +95,7 @@ public class User implements Serializable {
 		
 	}
 //	@javax.persistence.OneToMany(mappedBy = "user") 
-	public Set<Book> getItems() {
+	public Vector<Book> getItems() {
 		
 		return this.items;
 	}
