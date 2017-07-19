@@ -40,10 +40,8 @@ public class Book implements Serializable {
 	public void setLine(Integer line) {
 		this.line = line;
 	}
-	@Transient
 	private String location;
 	private Integer line;
-	@Transient
 	private boolean exist;
 	
 	
@@ -101,6 +99,7 @@ public class Book implements Serializable {
 	}
 	@Override
 	public boolean equals(Object obj) {
+		System.out.println(this.toString() + " and " + obj.toString() );
 		if (this == obj)
 			return true;
 		if (obj == null)

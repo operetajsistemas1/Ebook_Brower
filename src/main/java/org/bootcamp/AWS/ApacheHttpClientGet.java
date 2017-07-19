@@ -37,15 +37,17 @@ public class ApacheHttpClientGet {
 	public static User searchUser(User user) throws IOException, JSONException {
 		String request = "searchUser?name=";
 		String fullUrl = url + request + user.getName();
+		System.out.println(fullUrl);	
 		InputStream is = new URL(fullUrl).openStream();
 		try {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 			String jsonText = readAll(rd);
 			Gson gson=new Gson();
 			User[] user2 = gson.fromJson(jsonText,User[].class);
-			if (user2.length >  0)
+			if (user2.length >  0) {
+				System.out.println("Resturned user: "+ user2[0].toString());	
 				return user2[0];
-			else
+			}else
 				return null;
 		} finally {
 			is.close();
@@ -117,7 +119,7 @@ public class ApacheHttpClientGet {
 
 	
 	public static Book updateBook(Book book, User user) throws IOException, JSONException {
-		String request = "insertUser?line=";
+		String request = "updateBook?line=";
 		String request2 = "&user=";
 		String request3 = "&name=";
 		String request4 = "&id=";
@@ -135,7 +137,7 @@ public class ApacheHttpClientGet {
 		}
 	}
 	public static User updateUser(User user) throws IOException, JSONException {
-		String request = "insertUser?book=";
+		String request = "updateUser?book=";
 		String request1 = "&user=";
 		String request2 = "&name=";
 		String fullUrl = url + request + user.getBookId() + request1 + user.getId() + request2 + user.getName();

@@ -47,10 +47,12 @@ public class Ebook implements Serializable {
 	/**
 	 * 
 	 */
+	private static JList list;
 	private static Ebook ebook;
 	private static User user;
+	private static MouseListener mouseListener;
 	private static final long serialVersionUID = 1L;
-	private JFrame frame;
+	private static JFrame frame;
 	JToolBar toolBar;
 	Reader reader = new Reader();
 	JTextPane textPane;
@@ -71,17 +73,21 @@ public class Ebook implements Serializable {
 				try {
 					f1 = new File("Books.dat");
 					if (f1.exists()) {
-						
+
 						user = new User();	
 						ois = new ObjectInputStream(new FileInputStream(f1));
 						user=(User) ois.readObject();
-					//	ois.close();		
+						//	ois.close();		
 						System.out.println("exists");
 						User tempUser = ApacheHttpClientGet.searchUser(user);
-						System.out.println("Got user from server:" + tempUser.toString());
-						updateUser(tempUser);
-						
-					
+						if (tempUser == null) {
+							user = ApacheHttpClientGet.inserUser(user);
+						} else {
+							System.out.println("Got user from server:" + tempUser.toString());
+							user = tempUser;
+							updateUser(tempUser);
+						}
+
 						Book book = null;
 						if (user.getBookId() == 0){
 							ebook = new Ebook(book);
@@ -95,17 +101,21 @@ public class Ebook implements Serializable {
 							}
 							ebook = new Ebook(book);
 						}
-						
-						
+
+
 					} else {
 						f1.createNewFile();
 						user = new User(name,"parole");
 						user.setBookId(0);
 						System.out.println("not exists");
 						User tempUser = ApacheHttpClientGet.searchUser(user);	
-						if (tempUser != null) user = tempUser;
-		//				user = ApacheHttpClientGet.inserUser(user);	
-						
+
+						if (tempUser != null) {
+							user = tempUser;
+						//	user = ApacheHttpClientGet.inserUser(user);	
+						}else {
+							
+						}
 						Book book = null;
 						ebook = new Ebook(book);
 						ebook.saveUser();
@@ -147,18 +157,19 @@ public class Ebook implements Serializable {
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				page--;
-				displayPage(page);
+				book.setLine(book.getLine()-1);
+				displayPage(book);
 			}
 		});
+
 		toolBar.removeAll();
 		toolBar.repaint();
 		toolBar.add(backButton);
 		JButton forewardButton = new JButton("Forward");
 		forewardButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				page++;
-				displayPage(page);
+				book.setLine(book.getLine()+1);
+				displayPage(book);
 			}
 		});
 		toolBar.add(forewardButton);
@@ -171,18 +182,20 @@ public class Ebook implements Serializable {
 		btnNewButton.setHorizontalAlignment(SwingConstants.RIGHT);
 		toolBar.add(btnNewButton);
 		textPane = new JTextPane();
+		textPane.removeAll();
+		textPane.repaint();		
 		frame.getContentPane().add(textPane, BorderLayout.CENTER);
 
 		reader.setMaxContentPerSection(3000); // Max string length for the
 		reader.setIsIncludingTextContent(true); // Optional, to return the
 		try {
-			reader.setFullContent("Metamorphosis-jackson.epub");
+			reader.setFullContent(book.getLocation()+"/"+book.getName()+ ".epub");
 		} catch (ReadingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} // Must call before readSection.
 
-		displayPage(page);
+		displayPage(book);
 
 	}
 
@@ -190,6 +203,8 @@ public class Ebook implements Serializable {
 
 
 	public void displayList(){
+
+		System.out.println("display list user" + user.toString());	
 		Vector<Book> books = user.getItems();
 		toolBar.removeAll();
 		toolBar.repaint();
@@ -213,10 +228,10 @@ public class Ebook implements Serializable {
 						book.setExist(true);
 						book.setUser(user);
 						book.setLine(0);
-						user.addBook(book);
 						System.out.println("adding new item");
 						try {
-							book = ApacheHttpClientGet.inserBook(book, user);
+							Book book2 = ApacheHttpClientGet.inserBook(book, user);
+							book.setId(book2.getId());
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -224,7 +239,10 @@ public class Ebook implements Serializable {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						ebook.saveUser();
+
+						System.out.println("Imported book: " + book.toString());
+						user.addBook(book);
+						//saveUser();
 						displayList();
 					}
 
@@ -233,22 +251,24 @@ public class Ebook implements Serializable {
 		});
 		btnAddABook.setHorizontalAlignment(SwingConstants.RIGHT);
 		toolBar.add(btnAddABook);
-		
-
-		final JList list = new JList(user.getItems());
-		System.out.println("displaying jlist");
-		MouseListener mouseListener = new MouseAdapter() {
-		    public void mouseClicked(MouseEvent e) {
-		        if (e.getClickCount() == 2) {
 
 
-		           Book book = (Book) list.getSelectedValue();
-		           // add selectedItem to your second list.
-		           displayBook(book);
-		         }
-		    }
-		};
-		list.addMouseListener(mouseListener);
+		list = new JList(user.getItems());
+		System.out.println(user.getItems().toString());
+//		mouseListener = new MouseAdapter() {
+//			public void mouseClicked(MouseEvent e) {
+//				if (e.getClickCount() == 2) {
+//
+//
+//					Book book = (Book) list.getSelectedValue();
+//					// add selectedItem to your second list.
+//					System.out.println(book.toString());
+//					displayBook(book);
+//				}
+//			}
+//		};
+//		list.addMouseListener(mouseListener);
+		frame.getContentPane().add(list, BorderLayout.CENTER);
 		frame.add(list);
 		frame.setVisible(true);
 
@@ -260,10 +280,19 @@ public class Ebook implements Serializable {
 	}
 
 
+//	public static void updateJList() {
+//		//list.removeAll();
+//		list.removeAll();
+//		list= new JList(user.getItems());
+//		list.repaint();
+//		frame.getContentPane().add(list, BorderLayout.CENTER);
+//		
+//		
+//		
+//	}
 
-
-	public void saveUser(){
-		
+	public static void saveUser(){
+		System.out.println("Saving user: "+ user.toString());
 		try {
 			oos = new ObjectOutputStream(new FileOutputStream(f1));
 			oos.writeObject(user);
@@ -279,32 +308,35 @@ public class Ebook implements Serializable {
 	}
 
 	public static void updateUser(User serverUser){
+		System.out.println("update user: "+ user.toString());
+		System.out.println("update server user: "+ serverUser.toString());		
 		Iterator<Book> iter = serverUser.getItems().iterator();
 		while (iter.hasNext()){
 			Book book = iter.next();
-			if (user.getItems().contains(book)){
+			if (user.getItems().contains(book)  ){
+				System.out.println("Contains: "+ book.toString());
 				Iterator<Book> iterLocal = user.getItems().iterator();
 				while(iterLocal.hasNext()){
 					Book bookLocal = iterLocal.next();
 					if (bookLocal.equals(book)) bookLocal.setLine(book.getLine());
 				}
-				
+
 			}else{
 				book.setExist(false);
 				user.addBook(book);
 			}
 		}
-		
-		
+
+		System.out.println("update done: "+ user.toString());
 	}
 
 
 
-	public void displayPage(int page) {
+	public void displayPage(Book book) {
 
 		BookSection bookSection;
 		try {
-			bookSection = reader.readSection(page);
+			bookSection = reader.readSection(book.getLine());
 			String sectionContent = bookSection.getSectionContent(); // Returns
 			// content
 			// as
@@ -318,13 +350,19 @@ public class Ebook implements Serializable {
 			///// System.out.println(bookSection.getSectionContent());
 			// System.out.println(bookSection.getSectionTextContent());
 			/// System.out.println(bookSection.getLabel());
-
+			book = ApacheHttpClientGet.updateBook(book, user);
 		} catch (ReadingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (OutOfPagesException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
