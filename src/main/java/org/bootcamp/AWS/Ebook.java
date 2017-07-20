@@ -36,7 +36,9 @@ import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileSystemView;
-
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -141,7 +143,7 @@ public class Ebook implements Serializable {
 	public Ebook(Book book) {
 		System.out.println("Ebook init");
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(150, 150, 500, 350);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		toolBar = new JToolBar();
 		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
@@ -164,11 +166,19 @@ public class Ebook implements Serializable {
 			// frame.repaint();
 
 		}
+		toolBar.removeAll();
+		toolBar.repaint();
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				book.setLine(book.getLine() - 1);
 				displayPage(book);
+				try {
+					ApacheHttpClientGet.updateBook(book, user);
+				} catch (IOException | JSONException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -180,6 +190,15 @@ public class Ebook implements Serializable {
 			public void actionPerformed(ActionEvent e) {
 				book.setLine(book.getLine() + 1);
 				displayPage(book);
+				try {
+					ApacheHttpClientGet.updateBook(book, user);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (JSONException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		toolBar.add(forewardButton);
@@ -198,6 +217,10 @@ public class Ebook implements Serializable {
 		textPane = new JTextPane();
 		textPane.removeAll();
 		textPane.repaint();
+		StyledDocument doc = textPane.getStyledDocument();
+		SimpleAttributeSet center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_JUSTIFIED);
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
 		
 		JButton btnChangeFont = new JButton("Change Font");
 		btnChangeFont.addActionListener(new ActionListener() {
@@ -222,7 +245,7 @@ public class Ebook implements Serializable {
 		} catch (ReadingException e1) {
 			e1.printStackTrace();
 		} // Must call before readSection.
-
+		frame.setVisible(true);
 		displayPage(book);
 
 	}
@@ -394,15 +417,12 @@ public class Ebook implements Serializable {
 			///// System.out.println(bookSection.getSectionContent());
 			// System.out.println(bookSection.getSectionTextContent());
 			/// System.out.println(bookSection.getLabel());
-			book = ApacheHttpClientGet.updateBook(book, user);
+	//		book = ApacheHttpClientGet.updateBook(book, user);
 		} catch (ReadingException e1) {
 			e1.printStackTrace();
 		} catch (OutOfPagesException e1) {
 			e1.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
+
 		}
 
 	}
