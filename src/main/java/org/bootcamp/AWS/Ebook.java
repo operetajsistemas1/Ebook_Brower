@@ -213,7 +213,7 @@ public class Ebook implements Serializable {
 		
 		frame.getContentPane().add(textPane, BorderLayout.CENTER);
 		textPane.setVisible(true);
-		reader.setMaxContentPerSection(3000); // Max string length for the
+		reader.setMaxContentPerSection(1250); // Max string length for the
 		reader.setIsIncludingTextContent(true); // Optional, to return the
 		try {
 			//// reader.setFullContent(book.getLocation()+"/"+book.getName()+
@@ -388,7 +388,7 @@ public class Ebook implements Serializable {
 			String sectionTextContent = bookSection.getSectionTextContent(); // Excludes
 			// html
 			// tags.
-			System.out.println(sectionTextContent);
+			//System.out.println(sectionTextContent);
 			textPane.setText(sectionTextContent);
 			System.out.println("getSectionContent()");
 			///// System.out.println(bookSection.getSectionContent());
