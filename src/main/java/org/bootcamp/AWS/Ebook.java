@@ -1,7 +1,6 @@
 package org.bootcamp.AWS;
 
 import java.awt.EventQueue;
-import java.awt.Point;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JTextArea;
@@ -12,15 +11,13 @@ import com.github.mertakdut.Reader;
 import com.github.mertakdut.exception.OutOfPagesException;
 import com.github.mertakdut.exception.ReadingException;
 import java.awt.BorderLayout;
-import java.awt.Desktop;
 
 import javax.swing.JTextPane;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,11 +27,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.URI;
-import java.nio.file.Paths;
-import java.util.HashSet;
+
 import java.util.Iterator;
-import java.util.Set;
+
 import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
@@ -67,8 +62,7 @@ public class Ebook implements Serializable {
 	static private ObjectOutputStream oos;
 	static private ObjectInputStream ois;
 	static private String name = "Andris";
-	
-	
+
 	/**
 	 * Launch the application.
 	 */
@@ -79,10 +73,10 @@ public class Ebook implements Serializable {
 					f1 = new File("Books.dat");
 					if (f1.exists()) {
 
-						user = new User();	
+						user = new User();
 						ois = new ObjectInputStream(new FileInputStream(f1));
-						user=(User) ois.readObject();
-						//	ois.close();		
+						user = (User) ois.readObject();
+						// ois.close();
 						System.out.println("exists");
 						User tempUser = ApacheHttpClientGet.searchUser(user);
 						if (tempUser == null) {
@@ -94,32 +88,33 @@ public class Ebook implements Serializable {
 						}
 
 						Book book = null;
-						if (user.getBookId() == 0){
+						if (user.getBookId() == 0) {
 							ebook = new Ebook(book);
 						} else {
-							int bookId  = user.getBookId();
+							int bookId = user.getBookId();
 							Iterator<Book> iter = user.getItems().iterator();
-							while (iter.hasNext()){
+							while (iter.hasNext()) {
 								book = iter.next();
-								if (book.getId()== bookId) break;//////this.bookId=book.getId()
-								else book = null;
+								if (book.getId() == bookId)
+									break;////// this.bookId=book.getId()
+								else
+									book = null;
 							}
 							ebook = new Ebook(book);
 						}
 
-
 					} else {
 						f1.createNewFile();
-						user = new User(name,"parole");
+						user = new User(name, "parole");
 						user.setBookId(0);
 						System.out.println("not exists");
-						User tempUser = ApacheHttpClientGet.searchUser(user);	
+						User tempUser = ApacheHttpClientGet.searchUser(user);
 
 						if (tempUser != null) {
 							user = tempUser;
-						//	user = ApacheHttpClientGet.inserUser(user);	
-						}else {
-							
+							// user = ApacheHttpClientGet.inserUser(user);
+						} else {
+
 						}
 						Book book = null;
 						ebook = new Ebook(book);
@@ -149,29 +144,28 @@ public class Ebook implements Serializable {
 		toolBar = new JToolBar();
 		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
 		toolBar.setVisible(true);
-		if (book != null){
+		if (book != null) {
 			displayBook(book);
-		}else {
+		} else {
 			displayList();
 		}
 
 	}
 
-
-	public void displayBook(Book book){
-		if (list != null){
-			//list.disable();
-			//list.hide();
-			//list.removeAll();
+	public void displayBook(Book book) {
+		if (list != null) {
+			// list.disable();
+			// list.hide();
+			// list.removeAll();
 			list.setVisible(false);
-			//frame.remove(list);
-			//frame.repaint();
-			
+			// frame.remove(list);
+			// frame.repaint();
+
 		}
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				book.setLine(book.getLine()-1);
+				book.setLine(book.getLine() - 1);
 				displayPage(book);
 			}
 		});
@@ -182,7 +176,7 @@ public class Ebook implements Serializable {
 		JButton forewardButton = new JButton("Forward");
 		forewardButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				book.setLine(book.getLine()+1);
+				book.setLine(book.getLine() + 1);
 				displayPage(book);
 			}
 		});
@@ -197,16 +191,16 @@ public class Ebook implements Serializable {
 		toolBar.add(btnNewButton);
 		textPane = new JTextPane();
 		textPane.removeAll();
-		textPane.repaint();		
+		textPane.repaint();
 		frame.getContentPane().add(textPane, BorderLayout.CENTER);
 		textPane.setVisible(true);
 		reader.setMaxContentPerSection(3000); // Max string length for the
 		reader.setIsIncludingTextContent(true); // Optional, to return the
 		try {
-			////reader.setFullContent(book.getLocation()+"/"+book.getName()+ ".epub");
-			reader.setFullContent(book.getName()+ ".epub");
+			//// reader.setFullContent(book.getLocation()+"/"+book.getName()+
+			//// ".epub");
+			reader.setFullContent(book.getName() + ".epub");
 		} catch (ReadingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} // Must call before readSection.
 
@@ -214,20 +208,17 @@ public class Ebook implements Serializable {
 
 	}
 
-
-
-
-	public void displayList(){
-		if (textPane != null){
-			//list.disable();
-			//list.hide();
-			//list.removeAll();
+	public void displayList() {
+		if (textPane != null) {
+			// list.disable();
+			// list.hide();
+			// list.removeAll();
 			textPane.setVisible(false);
-			//frame.remove(list);
-			//frame.repaint();
-			
+			// frame.remove(list);
+			// frame.repaint();
+
 		}
-		System.out.println("display list user" + user.toString());	
+		System.out.println("display list user" + user.toString());
 		Vector<Book> books = user.getItems();
 		toolBar.removeAll();
 		toolBar.repaint();
@@ -256,16 +247,14 @@ public class Ebook implements Serializable {
 							Book book2 = ApacheHttpClientGet.inserBook(book, user);
 							book.setId(book2.getId());
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (JSONException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 
 						System.out.println("Imported book: " + book.toString());
 						user.addBook(book);
-						//saveUser();
+						// saveUser();
 						displayList();
 					}
 
@@ -275,114 +264,98 @@ public class Ebook implements Serializable {
 		btnAddABook.setHorizontalAlignment(SwingConstants.RIGHT);
 		toolBar.add(btnAddABook);
 
-
 		list = new JList(user.getItems());
 		System.out.println(user.getItems().toString());
-//		mouseListener = new MouseAdapter() {
-//			public void mouseClicked(MouseEvent e) {
-//				if (e.getClickCount() == 2) {
-//
-//
-//					Book book = (Book) list.getSelectedValue();
-//					// add selectedItem to your second list.
-//					System.out.println(book.toString());
-//					displayBook(book);
-//				}
-//			}
-//		};
-//		list.addMouseListener(mouseListener);
-		
-		
-		
+		// mouseListener = new MouseAdapter() {
+		// public void mouseClicked(MouseEvent e) {
+		// if (e.getClickCount() == 2) {
+		//
+		//
+		// Book book = (Book) list.getSelectedValue();
+		// // add selectedItem to your second list.
+		// System.out.println(book.toString());
+		// displayBook(book);
+		// }
+		// }
+		// };
+		// list.addMouseListener(mouseListener);
 
-		
-	      list.addListSelectionListener(new ListSelectionListener() {
+		list.addListSelectionListener(new ListSelectionListener() {
 
-	            @Override
-	            public void valueChanged(ListSelectionEvent arg0) {
-	                if (!arg0.getValueIsAdjusting()) {
-	                  ////label.setText(dataList.getSelectedValue().toString());
-	                	 	                	 	
-	                	 	
-							Iterator<Book> iter = user.getItems().iterator();											
-							Book b=null;														
-							for(int i=0;iter.hasNext();i++){
-								b=iter.next();
-								if (i==list.getSelectedIndex()){
-									break;
-								}
-							}
-							displayBook(b);
-							
-	                }
-	            }
-	        });
-		
-		
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				if (!arg0.getValueIsAdjusting()) {
+					//// label.setText(dataList.getSelectedValue().toString());
+
+					Iterator<Book> iter = user.getItems().iterator();
+					Book b = null;
+					for (int i = 0; iter.hasNext(); i++) {
+						b = iter.next();
+						if (i == list.getSelectedIndex()) {
+							break;
+						}
+					}
+					displayBook(b);
+
+				}
+			}
+		});
+
 		frame.getContentPane().add(list, BorderLayout.CENTER);
-		////TODO why not one statement to add list contents to  the frame ???
-		//frame.add(list);
+		// frame.add(list);
 		frame.setVisible(true);
 		list.setVisible(true);
 
-
-
-
-
 	}
 
+	// public static void updateJList() {
+	// //list.removeAll();
+	// list.removeAll();
+	// list= new JList(user.getItems());
+	// list.repaint();
+	// frame.getContentPane().add(list, BorderLayout.CENTER);
+	//
+	//
+	//
+	// }
 
-//	public static void updateJList() {
-//		//list.removeAll();
-//		list.removeAll();
-//		list= new JList(user.getItems());
-//		list.repaint();
-//		frame.getContentPane().add(list, BorderLayout.CENTER);
-//		
-//		
-//		
-//	}
-
-	public static void saveUser(){
-		System.out.println("Saving user: "+ user.toString());
+	public static void saveUser() {
+		System.out.println("Saving user: " + user.toString());
 		try {
 			oos = new ObjectOutputStream(new FileOutputStream(f1));
 			oos.writeObject(user);
-			oos.close();	
+			oos.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 
 	}
 
-	public static void updateUser(User serverUser){
-		System.out.println("update user: "+ user.toString());
-		System.out.println("update server user: "+ serverUser.toString());		
+	public static void updateUser(User serverUser) {
+		System.out.println("update user: " + user.toString());
+		System.out.println("update server user: " + serverUser.toString());
 		Iterator<Book> iter = serverUser.getItems().iterator();
-		while (iter.hasNext()){
+		while (iter.hasNext()) {
 			Book book = iter.next();
-			if (user.getItems().contains(book)  ){
-				System.out.println("Contains: "+ book.toString());
+			if (user.getItems().contains(book)) {
+				System.out.println("Contains: " + book.toString());
 				Iterator<Book> iterLocal = user.getItems().iterator();
-				while(iterLocal.hasNext()){
+				while (iterLocal.hasNext()) {
 					Book bookLocal = iterLocal.next();
-					if (bookLocal.equals(book)) bookLocal.setLine(book.getLine());
+					if (bookLocal.equals(book))
+						bookLocal.setLine(book.getLine());
 				}
 
-			}else{
+			} else {
 				book.setExist(false);
 				user.addBook(book);
 			}
 		}
 
-		System.out.println("update done: "+ user.toString());
+		System.out.println("update done: " + user.toString());
 	}
-
-
 
 	public void displayPage(Book book) {
 
@@ -404,16 +377,12 @@ public class Ebook implements Serializable {
 			/// System.out.println(bookSection.getLabel());
 			book = ApacheHttpClientGet.updateBook(book, user);
 		} catch (ReadingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (OutOfPagesException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
