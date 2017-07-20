@@ -40,6 +40,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileSystemView;
 
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import org.json.JSONException;
 
 public class Ebook implements Serializable {
@@ -64,6 +67,8 @@ public class Ebook implements Serializable {
 	static private ObjectOutputStream oos;
 	static private ObjectInputStream ois;
 	static private String name = "Andris";
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -96,7 +101,7 @@ public class Ebook implements Serializable {
 							Iterator<Book> iter = user.getItems().iterator();
 							while (iter.hasNext()){
 								book = iter.next();
-								if (book.getId()== bookId) break;
+								if (book.getId()== bookId) break;//////this.bookId=book.getId()
 								else book = null;
 							}
 							ebook = new Ebook(book);
@@ -189,7 +194,8 @@ public class Ebook implements Serializable {
 		reader.setMaxContentPerSection(3000); // Max string length for the
 		reader.setIsIncludingTextContent(true); // Optional, to return the
 		try {
-			reader.setFullContent(book.getLocation()+"/"+book.getName()+ ".epub");
+			////reader.setFullContent(book.getLocation()+"/"+book.getName()+ ".epub");
+			reader.setFullContent(book.getName()+ ".epub");
 		} catch (ReadingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -203,7 +209,11 @@ public class Ebook implements Serializable {
 
 
 	public void displayList(){
-
+		if (list != null){
+			frame.remove(list);
+			frame.repaint();
+			
+		}
 		System.out.println("display list user" + user.toString());	
 		Vector<Book> books = user.getItems();
 		toolBar.removeAll();
@@ -268,10 +278,39 @@ public class Ebook implements Serializable {
 //			}
 //		};
 //		list.addMouseListener(mouseListener);
+		
+		
+		
+
+		
+	      list.addListSelectionListener(new ListSelectionListener() {
+
+	            @Override
+	            public void valueChanged(ListSelectionEvent arg0) {
+	                if (!arg0.getValueIsAdjusting()) {
+	                  ////label.setText(dataList.getSelectedValue().toString());
+	                	 	                	 	
+	                	 	
+							Iterator<Book> iter = user.getItems().iterator();											
+							Book b=null;														
+							for(int i=0;iter.hasNext();i++){
+								b=iter.next();
+								if (i==list.getSelectedIndex()){
+									break;
+								}
+							}
+							displayBook(b);
+							
+	                }
+	            }
+	        });
+		
+		
 		frame.getContentPane().add(list, BorderLayout.CENTER);
+		////TODO why not one statement to add list contents to  the frame ???
 		frame.add(list);
 		frame.setVisible(true);
-
+		
 
 
 
