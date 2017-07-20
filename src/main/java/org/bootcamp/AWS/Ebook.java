@@ -1,6 +1,8 @@
 package org.bootcamp.AWS;
 
 import java.awt.EventQueue;
+import java.awt.Font;
+
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JTextArea;
@@ -189,9 +191,26 @@ public class Ebook implements Serializable {
 		});
 		btnNewButton.setHorizontalAlignment(SwingConstants.RIGHT);
 		toolBar.add(btnNewButton);
+		
+		
+		
+		
 		textPane = new JTextPane();
 		textPane.removeAll();
 		textPane.repaint();
+		
+		JButton btnChangeFont = new JButton("Change Font");
+		btnChangeFont.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+		        Font font = new Font("Serif", Font.ITALIC, 12);
+		        textPane.setFont(font);
+		        toolBar.repaint();
+			}
+		});
+		btnChangeFont.setHorizontalAlignment(SwingConstants.RIGHT);
+		toolBar.add(btnChangeFont);
+		
+		
 		frame.getContentPane().add(textPane, BorderLayout.CENTER);
 		textPane.setVisible(true);
 		reader.setMaxContentPerSection(3000); // Max string length for the
