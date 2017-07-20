@@ -159,6 +159,15 @@ public class Ebook implements Serializable {
 
 
 	public void displayBook(Book book){
+		if (list != null){
+			//list.disable();
+			//list.hide();
+			//list.removeAll();
+			list.setVisible(false);
+			//frame.remove(list);
+			//frame.repaint();
+			
+		}
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -190,7 +199,7 @@ public class Ebook implements Serializable {
 		textPane.removeAll();
 		textPane.repaint();		
 		frame.getContentPane().add(textPane, BorderLayout.CENTER);
-
+		textPane.setVisible(true);
 		reader.setMaxContentPerSection(3000); // Max string length for the
 		reader.setIsIncludingTextContent(true); // Optional, to return the
 		try {
@@ -209,9 +218,13 @@ public class Ebook implements Serializable {
 
 
 	public void displayList(){
-		if (list != null){
-			frame.remove(list);
-			frame.repaint();
+		if (textPane != null){
+			//list.disable();
+			//list.hide();
+			//list.removeAll();
+			textPane.setVisible(false);
+			//frame.remove(list);
+			//frame.repaint();
 			
 		}
 		System.out.println("display list user" + user.toString());	
@@ -308,9 +321,9 @@ public class Ebook implements Serializable {
 		
 		frame.getContentPane().add(list, BorderLayout.CENTER);
 		////TODO why not one statement to add list contents to  the frame ???
-		frame.add(list);
+		//frame.add(list);
 		frame.setVisible(true);
-		
+		list.setVisible(true);
 
 
 
