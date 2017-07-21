@@ -66,7 +66,7 @@ public class Ebook implements Serializable {
 	static private ObjectOutputStream oos;
 	static private ObjectInputStream ois;
 	static private String name = "user1";
-
+	private static boolean fontIsSet = false;
 	/**
 	 * Launch the application.
 	 */
@@ -220,9 +220,17 @@ public class Ebook implements Serializable {
 		JButton btnChangeFont = new JButton("Change Font");
 		btnChangeFont.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Font font = new Font("Serif", Font.ITALIC, 12);
-				textPane.setFont(font);
-				toolBar.repaint();
+				if (fontIsSet){
+					Font font = new Font("Serif", Font.PLAIN, 12);
+					textPane.setFont(font);
+					toolBar.repaint();
+					fontIsSet = false;
+				} else {
+					Font font = new Font("Serif", Font.ITALIC, 12);
+					textPane.setFont(font);
+					toolBar.repaint();
+					fontIsSet = true;
+				}
 			}
 		});
 		btnChangeFont.setHorizontalAlignment(SwingConstants.RIGHT);
