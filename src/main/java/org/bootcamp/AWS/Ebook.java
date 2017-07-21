@@ -65,7 +65,7 @@ public class Ebook implements Serializable {
 	static File f1;
 	static private ObjectOutputStream oos;
 	static private ObjectInputStream ois;
-	static private String name = "Andris";
+	static private String name = "user1";
 
 	/**
 	 * Launch the application.
@@ -116,9 +116,9 @@ public class Ebook implements Serializable {
 
 						if (tempUser != null) {
 							user = tempUser;
-							// user = ApacheHttpClientGet.inserUser(user);
-						} else {
 
+						} else {
+							user = ApacheHttpClientGet.inserUser(user);
 						}
 						Book book = null;
 						ebook = new Ebook(book);
@@ -158,12 +158,7 @@ public class Ebook implements Serializable {
 
 	public void displayBook(Book book) {
 		if (list != null) {
-			// list.disable();
-			// list.hide();
-			// list.removeAll();
 			list.setVisible(false);
-			// frame.remove(list);
-			// frame.repaint();
 
 		}
 		toolBar.removeAll();
@@ -210,10 +205,10 @@ public class Ebook implements Serializable {
 		});
 		btnNewButton.setHorizontalAlignment(SwingConstants.RIGHT);
 		toolBar.add(btnNewButton);
-		
-		
-		
-		
+
+
+
+
 		textPane = new JTextPane();
 		textPane.removeAll();
 		textPane.repaint();
@@ -221,19 +216,19 @@ public class Ebook implements Serializable {
 		SimpleAttributeSet center = new SimpleAttributeSet();
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_JUSTIFIED);
 		doc.setParagraphAttributes(0, doc.getLength(), center, false);
-		
+
 		JButton btnChangeFont = new JButton("Change Font");
 		btnChangeFont.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-		        Font font = new Font("Serif", Font.ITALIC, 12);
-		        textPane.setFont(font);
-		        toolBar.repaint();
+				Font font = new Font("Serif", Font.ITALIC, 12);
+				textPane.setFont(font);
+				toolBar.repaint();
 			}
 		});
 		btnChangeFont.setHorizontalAlignment(SwingConstants.RIGHT);
 		toolBar.add(btnChangeFont);
-		
-		
+
+
 		frame.getContentPane().add(textPane, BorderLayout.CENTER);
 		textPane.setVisible(true);
 		reader.setMaxContentPerSection(1250); // Max string length for the
@@ -295,9 +290,11 @@ public class Ebook implements Serializable {
 						}
 
 						System.out.println("Imported book: " + book.toString());
+						System.out.println(book.toString() +": " +book.getLocation());
 						user.addBook(book);
-						// saveUser();
-						displayList();
+						saveUser();
+						bookChosen(book);
+						textPane.setVisible(true);
 					}
 
 				}
@@ -308,36 +305,24 @@ public class Ebook implements Serializable {
 
 		list = new JList(user.getItems());
 		System.out.println(user.getItems().toString());
-		// mouseListener = new MouseAdapter() {
-		// public void mouseClicked(MouseEvent e) {
-		// if (e.getClickCount() == 2) {
-		//
-		//
-		// Book book = (Book) list.getSelectedValue();
-		// // add selectedItem to your second list.
-		// System.out.println(book.toString());
-		// displayBook(book);
-		// }
-		// }
-		// };
-		// list.addMouseListener(mouseListener);
+
 
 		list.addListSelectionListener(new ListSelectionListener() {
 
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
 				if (!arg0.getValueIsAdjusting()) {
-					//// label.setText(dataList.getSelectedValue().toString());
 
 					Iterator<Book> iter = user.getItems().iterator();
 					Book b = null;
 					for (int i = 0; iter.hasNext(); i++) {
+						System.out.println(b.toString() +": " +b.getLocation());
 						b = iter.next();
 						if (i == list.getSelectedIndex()) {
 							break;
 						}
 					}
-					displayBook(b);
+					bookChosen(b);
 
 				}
 			}
@@ -349,7 +334,16 @@ public class Ebook implements Serializable {
 		list.setVisible(true);
 
 	}
-
+	public void bookChosen(Book b){
+		user.setBookId(b.getId());
+		try {
+			user = ApacheHttpClientGet.updateUser(user);
+		} catch (IOException | JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		displayBook(b);
+	}
 	// public static void updateJList() {
 	// //list.removeAll();
 	// list.removeAll();
@@ -417,7 +411,7 @@ public class Ebook implements Serializable {
 			///// System.out.println(bookSection.getSectionContent());
 			// System.out.println(bookSection.getSectionTextContent());
 			/// System.out.println(bookSection.getLabel());
-	//		book = ApacheHttpClientGet.updateBook(book, user);
+			//		book = ApacheHttpClientGet.updateBook(book, user);
 		} catch (ReadingException e1) {
 			e1.printStackTrace();
 		} catch (OutOfPagesException e1) {
